@@ -1,6 +1,9 @@
 'use client';
 
-import { Todo } from '@/lib/todo-store';
+import type { Todo } from '@/lib/todo-store';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
 
 interface TodoItemProps {
   todo: Todo;
@@ -10,37 +13,32 @@ interface TodoItemProps {
 
 export default function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
   return (
-    <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-200 hover:border-gray-300 transition-colors">
-      <button
-        onClick={() => onToggle(todo.id)}
-        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+    <div className="group/item flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent hover:border-border hover:bg-muted/40 transition-colors">
+      <Checkbox
+        id={`todo-${todo.id}`}
+        checked={todo.completed}
+        onCheckedChange={() => onToggle(todo.id)}
+        className="data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+      />
+      <label
+        htmlFor={`todo-${todo.id}`}
+        className={`flex-1 text-sm leading-none cursor-pointer ${
           todo.completed
-            ? 'bg-green-500 border-green-500'
-            : 'border-gray-300 hover:border-blue-400'
-        }`}
-      >
-        {todo.completed && (
-          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        )}
-      </button>
-      <span
-        className={`flex-1 text-gray-900 transition-all ${
-          todo.completed ? 'line-through text-gray-400' : ''
+            ? 'text-muted-foreground line-through'
+            : 'text-foreground'
         }`}
       >
         {todo.text}
-      </span>
-      <button
+      </label>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        className="shrink-0 opacity-0 group-hover/item:opacity-100 text-muted-foreground hover:text-destructive transition-opacity"
         onClick={() => onDelete(todo.id)}
-        className="p-1 text-gray-400 hover:text-red-500 transition-colors"
         aria-label="删除"
       >
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+        <Trash2 className="size-4" />
+      </Button>
     </div>
   );
 }

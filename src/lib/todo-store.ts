@@ -7,13 +7,9 @@ export interface Todo {
 
 export type FilterType = 'all' | 'active' | 'completed';
 
-let todos: Todo[] = [];
-
-export function getTodos(): Todo[] {
-  return [...todos];
-}
-
 export function addTodo(text: string): Todo {
+  const stored = localStorage.getItem('todos');
+  const todos: Todo[] = stored ? JSON.parse(stored) : [];
   const todo: Todo = {
     id: crypto.randomUUID(),
     text: text.trim(),
@@ -21,37 +17,32 @@ export function addTodo(text: string): Todo {
     createdAt: Date.now(),
   };
   todos.unshift(todo);
-  return { ...todo };
+  localStorage.setItem('todos', JSON.stringify(todos));
+  return todo;
 }
 
 export function toggleTodo(id: string): void {
-  todos = todos.map(t =>
-    t.id === id ? { ...t, completed: !t.completed } : t
+  const stored = localStorage.getItem('todos');
+  if (!stored) return;
+  const todos: Todo[] = JSON.parse(stored);
+  const next = todos.map((t) =>
+    t.id === id ? { ...t, completed: !t.completed } : t,
   );
+  localStorage.setItem('todos', JSON.stringify(next));
 }
 
 export function deleteTodo(id: string): void {
-  todos = todos.filter(t => t.id !== id);
+  const stored = localStorage.getItem('todos');
+  if (!stored) return;
+  const todos: Todo[] = JSON.parse(stored);
+  const next = todos.filter((t) => t.id !== id);
+  localStorage.setItem('todos', JSON.stringify(next));
 }
 
 export function clearCompleted(): void {
-  todos = todos.filter(t => !t.completed);
-}
-
-export function getFilteredTodos(filter: FilterType): Todo[] {
-  switch (filter) {
-    case 'active':
-      return todos.filter(t => !t.completed);
-    case 'completed':
-      return todos.filter(t => t.completed);
-    default:
-      return todos;
-  }
-}
-
-export function getStats() {
-  const total = todos.length;
-  const active = todos.filter(t => !t.completed).length;
-  const completed = todos.filter(t => t.completed).length;
-  return { total, active, completed };
+  const stored = localStorage.getItem('todos');
+  if (!stored) return;
+  const todos: Todo[] = JSON.parse(stored);
+  const next = todos.filter((t) => !t.completed);
+  localStorage.setItem('todos', JSON.stringify(next));
 }

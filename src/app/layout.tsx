@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Todo App",
-  description: "Next.js Todo Application",
+  description: "Next.js Todo Application with shadcn/ui",
 };
 
 export default function RootLayout({
@@ -12,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
-      <body className="antialiased bg-gray-50">{children}</body>
+    <html lang="zh-CN" suppressHydrationWarning>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }
